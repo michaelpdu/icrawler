@@ -13,6 +13,7 @@ from icrawler import Crawler, Feeder, Parser, ImageDownloader
 class FlickrFeeder(Feeder):
 
     def feed(self, apikey, max_num=4000, **kwargs):
+        print("[feed] max_num=", max_num)
         # if max_num > 4000:
         #     max_num = 4000
         #     self.logger.warning(
@@ -67,6 +68,7 @@ class FlickrFeeder(Feeder):
 class FlickrParser(Parser):
 
     def parse(self, response, apikey, size_preference=None):
+        print('[parse] size preference:', size_preference)
         content = json.loads(response.content.decode('utf-8', 'ignore'))
         if content['stat'] != 'ok':
             return
@@ -83,6 +85,7 @@ class FlickrParser(Parser):
             }
             try:
                 ret = self.session.get(base_url + urlencode(params))
+                # print(ret.content)
                 info = json.loads(ret.content.decode())
             except:
                 continue
@@ -94,6 +97,7 @@ class FlickrParser(Parser):
                     }
                 else:
                     continue
+                # print(urls)
                 for sz in size_preference:
                     if sz in urls:
                         yield dict(file_url=urls[sz], meta=photo)
@@ -125,6 +129,7 @@ class FlickrImageCrawler(Crawler):
               file_idx_offset=0,
               overwrite=False,
               **kwargs):
+        kwargs['max_num'] = max_num
         kwargs['apikey'] = self.apikey
 
         default_order = [

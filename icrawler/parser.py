@@ -101,6 +101,7 @@ class Parser(ThreadPool):
                         retry - 1)
                 else:
                     self.logger.info('parsing result page {}'.format(url))
+                    # print(response.content)
                     for task in self.parse(response, **kwargs):
                         while not self.signal.get('reach_max_num'):
                             try:
